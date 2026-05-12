@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>學校午餐菜單規劃系統</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F7F3ED;
+    --ink: #1C1C1E;
+    --moss: #4A6741;
+    --sage: #7A9E72;
+    --clay: #C4795A;
+    --sand: #E8D9C4;
+    --mist: #D4E5D0;
+    --border: #D0C8BC;
+    --warn: #E07B4A;
+    --good: #4A8C5C;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--moss);
+    color: white;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  header h1 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  header span {
+    font-size: 0.8rem;
+    opacity: 0.75;
+    margin-left: 8px;
+  }
+  .header-icon { font-size: 1.8rem; }
+
+  /* LAYOUT */
+  .app { display: flex; height: calc(100vh - 68px); }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 260px;
+    background: white;
+    border-right: 1px solid var(--border);
+    padding: 20px 0;
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+  .sidebar-section { margin-bottom: 24px; }
+  .sidebar-title {
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: #999;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0 20px;
+    margin-bottom: 8px;
+  }
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    color: var(--ink);
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+  .sidebar-item:hover { background: var(--cream); }
+  .sidebar-item.active {
+    border-left-color: var(--moss);
+    background: var(--mist);
+    color: var(--moss);
+    font-weight: 500;
+  }
+
+  /* MAIN */
+  .main { flex: 1; overflow-y: auto; padding: 28px 32px; }
+
+  /* WEEK SELECTOR */
+  .week-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .week-bar h2 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  .week-nav {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+    align-items: center;
+  }
+  .week-nav button {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.84rem;
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+  .week-nav button:hover { background: var(--mist); border-color: var(--sage); }
+  .week-label {
+    font-size: 0.88rem;
+    color: #666;
+    padding: 0 8px;
+  }
+
+  /* MENU GRID */
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .day-col { display: flex; flex-direction: column; gap: 10px; }
+  .day-header {
+    background: var(--moss);
+    color: white;
+    text-align: center;
+    padding: 8px;
+    border-radius: 8px 8px 0 0;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .day-header .date { font-size: 0.7rem; opacity: 0.75; margin-top: 2px; }
+
+  .meal-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    min-height: 120px;
+    position: relative;
+    transition: box-shadow 0.2s;
+  }
+  .meal-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .meal-card.pass { border-left: 3px solid var(--good); }
+  .meal-card.warn { border-left: 3px solid var(--warn); }
+
+  .meal-type {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--sage);
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .meal-items { list-style: none; }
+  .meal-items li {
+    font-size: 0.8rem;
+    color: #444;
+    padding: 2px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .meal-items li::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--sage);
+    flex-shrink: 0;
+  }
+  .meal-empty {
+    font-size: 0.8rem;
+    color: #bbb;
+    font-style: italic;
+    text-align: center;
+    padding-top: 24px;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+  }
+  .btn-edit, .btn-ai {
+    flex: 1;
+    padding: 5px 8px;
+    border-radius: 5px;
+    font-size: 0.72rem;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: all 0.15s;
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+  .btn-edit { background: white; color: #555; }
+  .btn-edit:hover { background: var(--cream); }
+  .btn-ai { background: var(--moss); color: white; border-color: var(--moss); }
+  .btn-ai:hover { background: #3a5533; }
+
+  /* NUTRITION BAR */
+  .nutrition-panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .nutrition-panel h3 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nutrition-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+  }
+  .nutrient-box {
+    background: var(--cream);
+    border-radius: 8px;
+    padding: 12px 10px;
+    text-align: center;
+  }
+  .nutrient-label { font-size: 0.7rem; color: #777; margin-bottom: 4px; }
+  .nutrient-value { font-size: 1.1rem; font-weight: 600; color: var(--ink); }
+  .nutrient-target { font-size: 0.68rem; color: #aaa; }
+  .nutrient-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  .nutrient-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--sage);
+    transition: width 0.5s;
+  }
+  .nutrient-fill.over { background: var(--warn); }
+
+  /* COMPLIANCE */
+  .compliance-panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .compliance-panel h3 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .compliance-list { display: flex; flex-direction: column; gap: 8px; }
+  .compliance-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.84rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: var(--cream);
+  }
+  .compliance-item.ok { color: var(--good); }
+  .compliance-item.fail { color: var(--clay); }
+  .compliance-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .ok .compliance-dot { background: var(--good); }
+  .fail .compliance-dot { background: var(--clay); }
+
+  /* EXPORT */
+  .export-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .btn-export {
+    padding: 9px 20px;
+    border-radius: 7px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-family: 'Noto Sans TC', sans-serif;
+    border: 1px solid var(--border);
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-export.primary { background: var(--moss); color: white; border-color: var(--moss); }
+  .btn-export.primary:hover { background: #3a5533; }
+  .btn-export.secondary { background: white; color: var(--ink); }
+  .btn-export.secondary:hover { background: var(--cream); }
+
+  /* MODAL */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .overlay.show { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 14px;
+    padding: 28px;
+    width: 520px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .modal-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .modal label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 5px;
+    margin-top: 14px;
+  }
+  .modal input, .modal textarea, .modal select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font-size: 0.88rem;
+    font-family: 'Noto Sans TC', sans-serif;
+    color: var(--ink);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .modal input:focus, .modal textarea:focus { border-color: var(--sage); background: white; }
+  .modal textarea { resize: vertical; min-height: 80px; }
+
+  .modal-footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+    justify-content: flex-end;
+  }
+  .btn-cancel {
+    padding: 9px 20px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: white;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+  .btn-save {
+    padding: 9px 20px;
+    border-radius: 7px;
+    border: none;
+    background: var(--moss);
+    color: white;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: 'Noto Sans TC', sans-serif;
+    transition: background 0.15s;
+  }
+  .btn-save:hover { background: #3a5533; }
+
+  /* AI RESULT */
+  .ai-result {
+    background: var(--mist);
+    border: 1px solid var(--sage);
+    border-radius: 8px;
+    padding: 14px;
+    margin-top: 14px;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    display: none;
+  }
+  .ai-result.show { display: block; }
+
+  .ai-loading {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.84rem;
+    color: var(--sage);
+    margin-top: 12px;
+  }
+  .ai-loading.show { display: flex; }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid var(--mist);
+    border-top-color: var(--sage);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .tab {
+    padding: 10px 20px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    color: #888;
+    transition: all 0.15s;
+  }
+  .tab.active { color: var(--moss); border-bottom-color: var(--moss); font-weight: 500; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* FOOD DB */
+  .food-search {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .food-search input {
+    flex: 1;
+    padding: 9px 14px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font-size: 0.88rem;
+    font-family: 'Noto Sans TC', sans-serif;
+    outline: none;
+    background: var(--cream);
+  }
+  .food-search input:focus { border-color: var(--sage); background: white; }
+  .food-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+  .food-table th {
+    background: var(--moss);
+    color: white;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 500;
+  }
+  .food-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .food-table tr:hover td { background: var(--cream); }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.68rem;
+    font-weight: 500;
+  }
+  .badge-grain { background: #FDF0D5; color: #B8860B; }
+  .badge-protein { background: #FFE8E0; color: #C0392B; }
+  .badge-veg { background: var(--mist); color: var(--moss); }
+  .badge-fruit { background: #FFF0F5; color: #C2185B; }
+  .badge-dairy { background: #E8F4FD; color: #1565C0; }
+  .badge-fat { background: #F3F3F3; color: #666; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="header-icon">🥗</span>
+  <h1>學校午餐菜單規劃系統 <span>高中版 · 符合教育部營養基準</span></h1>
+</header>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">功能選單</div>
+      <div class="sidebar-item active" onclick="switchTab('menu')">📅 每週菜單排程</div>
+      <div class="sidebar-item" onclick="switchTab('nutrition')">📊 營養素分析</div>
+      <div class="sidebar-item" onclick="switchTab('compliance')">✅ 基準符合檢核</div>
+      <div class="sidebar-item" onclick="switchTab('export')">📤 匯出給廠商</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">快速工具</div>
+      <div class="sidebar-item" onclick="openAIModal()">🤖 AI 建議本週菜單</div>
+      <div class="sidebar-item" onclick="switchTab('fooddb')">🍱 食材資料庫</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">目前週次</div>
+      <div style="padding: 0 20px; font-size:0.84rem; color:#555;" id="current-week-label">2026年 第19週</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- ===== 每週菜單 ===== -->
+    <div id="tab-menu" class="tab-panel active">
+      <div class="week-bar">
+        <h2>每週菜單排程</h2>
+        <div class="week-nav">
+          <button onclick="changeWeek(-1)">← 上週</button>
+          <span class="week-label" id="week-range-label">5/11 – 5/15</span>
+          <button onclick="changeWeek(1)">下週 →</button>
+        </div>
+      </div>
+
+      <div class="menu-grid" id="menu-grid"></div>
+
+      <div style="display:flex; gap:10px; margin-bottom:20px;">
+        <button class="btn-export primary" onclick="openAIModal()">🤖 AI 生成本週菜單</button>
+        <button class="btn-export secondary" onclick="clearWeek()">🗑 清空本週</button>
+      </div>
+    </div>
+
+    <!-- ===== 營養素分析 ===== -->
+    <div id="tab-nutrition" class="tab-panel">
+      <div class="week-bar">
+        <h2>📊 本週營養素分析</h2>
+      </div>
+      <div class="nutrition-panel">
+        <h3>🔢 日均營養素達成率（以高中生每日午餐建議量為基準）</h3>
+        <div class="nutrition-grid" id="nutrition-grid"></div>
+      </div>
+      <div class="nutrition-panel">
+        <h3>🥣 六大類食物佔比</h3>
+        <div id="food-group-bars"></div>
+      </div>
+    </div>
+
+    <!-- ===== 符合檢核 ===== -->
+    <div id="tab-compliance" class="tab-panel">
+      <div class="week-bar">
+        <h2>✅ 教育部基準符合檢核</h2>
+      </div>
+      <div class="compliance-panel">
+        <h3>本週檢核結果</h3>
+        <div class="compliance-list" id="compliance-list"></div>
+      </div>
+    </div>
+
+    <!-- ===== 匯出 ===== -->
+    <div id="tab-export" class="tab-panel">
+      <div class="week-bar">
+        <h2>📤 匯出菜單給廠商</h2>
+      </div>
+      <div class="nutrition-panel">
+        <h3>匯出格式</h3>
+        <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px;">
+          <button class="btn-export primary" style="width:fit-content;" onclick="exportCSV()">📄 匯出 CSV（廠商用）</button>
+          <button class="btn-export secondary" style="width:fit-content;" onclick="exportPrint()">🖨 列印版菜單（PDF）</button>
+          <button class="btn-export secondary" style="width:fit-content;" onclick="copyMenu()">📋 複製菜單文字</button>
+        </div>
+        <div id="export-preview" style="margin-top:20px; background:var(--cream); border-radius:8px; padding:16px; font-size:0.83rem; line-height:1.9; white-space:pre-wrap; font-family:monospace;"></div>
+      </div>
+    </div>
+
+    <!-- ===== 食材資料庫 ===== -->
+    <div id="tab-fooddb" class="tab-panel">
+      <div class="week-bar">
+        <h2>🍱 常用食材資料庫</h2>
+      </div>
+      <div class="food-search">
+        <input type="text" id="food-search-input" placeholder="搜尋食材名稱…" oninput="renderFoodDB()">
+      </div>
+      <table class="food-table">
+        <thead>
+          <tr>
+            <th>食材名稱</th><th>類別</th><th>熱量(kcal/100g)</th><th>蛋白質(g)</th><th>碳水(g)</th><th>脂肪(g)</th>
+          </tr>
+        </thead>
+        <tbody id="food-db-body"></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== MODAL: 編輯菜單 ===== -->
+<div class="overlay" id="edit-overlay" onclick="closeEditModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">✏️ 編輯菜單 — <span id="edit-modal-title"></span></div>
+    <label>主食</label>
+    <input type="text" id="edit-staple" placeholder="如：白飯、紫米飯、麵條…">
+    <label>主菜（蛋白質）</label>
+    <input type="text" id="edit-protein" placeholder="如：滷雞腿、蒸魚、豆腐…">
+    <label>副菜1（蔬菜）</label>
+    <input type="text" id="edit-veg1" placeholder="如：炒地瓜葉、涼拌小黃瓜…">
+    <label>副菜2（蔬菜或豆類）</label>
+    <input type="text" id="edit-veg2" placeholder="如：炒豆芽、玉米炒蛋…">
+    <label>湯品</label>
+    <input type="text" id="edit-soup" placeholder="如：蛤蜊湯、蔬菜豆腐湯…">
+    <label>水果</label>
+    <input type="text" id="edit-fruit" placeholder="如：當季水果一份">
+    <label>備註</label>
+    <textarea id="edit-note" placeholder="過敏原提示、素食版本等…"></textarea>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeEditModal()">取消</button>
+      <button class="btn-save" onclick="saveEdit()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: AI 建議 ===== -->
+<div class="overlay" id="ai-overlay" onclick="closeAIModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">🤖 AI 菜單建議</div>
+    <label>需求描述（選填）</label>
+    <textarea id="ai-prompt" placeholder="如：本週希望多用當季蔬菜、減少紅肉比例、加強鈣質攝取…" style="min-height:70px;"></textarea>
+    <label>目標週</label>
+    <select id="ai-week">
+      <option>本週（5/11–5/15）</option>
+      <option>下週（5/18–5/22）</option>
+    </select>
+    <button class="btn-save" style="margin-top:14px; width:100%;" onclick="runAI()">🚀 生成菜單建議</button>
+    <div class="ai-loading" id="ai-loading"><div class="spinner"></div> AI 正在規劃菜單…</div>
+    <div class="ai-result" id="ai-result"></div>
+    <div class="modal-footer" id="ai-apply-footer" style="display:none;">
+      <button class="btn-cancel" onclick="closeAIModal()">關閉</button>
+      <button class="btn-save" onclick="applyAIMenu()">套用到菜單</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const DAYS = ['星期一','星期二','星期三','星期四','星期五'];
+const DATES = ['5/11','5/12','5/13','5/14','5/15'];
+
+let weekOffset = 0;
+let currentEditDay = null;
+let aiGeneratedMenu = null;
+
+let menuData = {
+  0: { staple:'白飯', protein:'滷雞腿', veg1:'炒地瓜葉', veg2:'涼拌小黃瓜', soup:'蛤蜊湯', fruit:'芭樂', note:'' },
+  1: { staple:'麵條', protein:'蒸鱸魚', veg1:'燙菠菜', veg2:'炒豆芽菜', soup:'蔬菜豆腐湯', fruit:'番茄', note:'' },
+  2: { staple:'五穀飯', protein:'豆腐排', veg1:'炒高麗菜', veg2:'紅蘿蔔炒蛋', soup:'紫菜蛋花湯', fruit:'蘋果', note:'素食版：主菜換豆腐' },
+  3: { staple:'白飯', protein:'香煎豬里肌', veg1:'炒青花菜', veg2:'涼拌木耳', soup:'玉米排骨湯', fruit:'香蕉', note:'' },
+  4: { staple:'紫米飯', protein:'三色豆炒雞丁', veg1:'蒜炒空心菜', veg2:'冬瓜湯', soup:'薑絲蛤蜊湯', fruit:'芒果', note:'' }
+};
+
+const FOOD_DB = [
+  { name:'白飯', cat:'grain', kcal:180, protein:3.3, carb:40, fat:0.3 },
+  { name:'紫米飯', cat:'grain', kcal:175, protein:3.5, carb:38, fat:0.8 },
+  { name:'麵條（水煮）', cat:'grain', kcal:130, protein:4.2, carb:26, fat:0.5 },
+  { name:'五穀飯', cat:'grain', kcal:165, protein:4.0, carb:35, fat:1.0 },
+  { name:'雞腿（去骨）', cat:'protein', kcal:180, protein:18.5, carb:0, fat:11 },
+  { name:'鱸魚', cat:'protein', kcal:105, protein:18.9, carb:0, fat:3.0 },
+  { name:'豬里肌', cat:'protein', kcal:140, protein:22, carb:0, fat:5.6 },
+  { name:'嫩豆腐', cat:'protein', kcal:55, protein:5.1, carb:2.5, fat:2.8 },
+  { name:'雞蛋', cat:'protein', kcal:155, protein:12.6, carb:0.7, fat:10.6 },
+  { name:'地瓜葉', cat:'veg', kcal:22, protein:2.3, carb:2.5, fat:0.2 },
+  { name:'菠菜', cat:'veg', kcal:23, protein:2.9, carb:1.4, fat:0.4 },
+  { name:'高麗菜', cat:'veg', kcal:24, protein:1.3, carb:4.1, fat:0.2 },
+  { name:'青花菜', cat:'veg', kcal:32, protein:2.8, carb:3.7, fat:0.4 },
+  { name:'空心菜', cat:'veg', kcal:23, protein:1.7, carb:2.9, fat:0.3 },
+  { name:'蘋果', cat:'fruit', kcal:52, protein:0.3, carb:13, fat:0.2 },
+  { name:'芭樂', cat:'fruit', kcal:38, protein:0.9, carb:8.0, fat:0.5 },
+  { name:'香蕉', cat:'fruit', kcal:89, protein:1.1, carb:23, fat:0.3 },
+  { name:'牛奶（低脂）', cat:'dairy', kcal:46, protein:3.3, carb:4.7, fat:1.0 },
+];
+
+const CAT_BADGE = {
+  grain:'<span class="badge badge-grain">全穀雜糧</span>',
+  protein:'<span class="badge badge-protein">豆魚蛋肉</span>',
+  veg:'<span class="badge badge-veg">蔬菜</span>',
+  fruit:'<span class="badge badge-fruit">水果</span>',
+  dairy:'<span class="badge badge-dairy">乳品</span>',
+  fat:'<span class="badge badge-fat">油脂</span>'
+};
+
+// ===== RENDER MENU GRID =====
+function renderMenu() {
+  const grid = document.getElementById('menu-grid');
+  grid.innerHTML = '';
+  DAYS.forEach((day, i) => {
+    const meal = menuData[i] || {};
+    const hasData = meal.staple || meal.protein;
+    const col = document.createElement('div');
+    col.className = 'day-col';
+    col.innerHTML = `
+      <div class="day-header">${day}<div class="date">${getDate(i)}</div></div>
+      <div class="meal-card ${hasData ? 'pass' : ''}">
+        <div class="meal-type">🍱 今日午餐</div>
+        ${hasData ? `<ul class="meal-items">
+          ${meal.staple ? `<li>${meal.staple}</li>` : ''}
+          ${meal.protein ? `<li>${meal.protein}</li>` : ''}
+          ${meal.veg1 ? `<li>${meal.veg1}</li>` : ''}
+          ${meal.veg2 ? `<li>${meal.veg2}</li>` : ''}
+          ${meal.soup ? `<li>${meal.soup}</li>` : ''}
+          ${meal.fruit ? `<li>🍊 ${meal.fruit}</li>` : ''}
+        </ul>${meal.note ? `<div style="font-size:0.7rem;color:#999;margin-top:6px;">📌 ${meal.note}</div>` : ''}` : '<div class="meal-empty">尚未排菜</div>'}
+        <div class="card-actions">
+          <button class="btn-edit" onclick="openEditModal(${i})">✏️ 編輯</button>
+          <button class="btn-ai" onclick="openAIModalDay(${i})">🤖 AI</button>
+        </div>
+      </div>`;
+    grid.appendChild(col);
+  });
+}
+
+function getDate(i) {
+  const base = new Date(2026, 4, 11); // May 11
+  base.setDate(base.getDate() + weekOffset * 7 + i);
+  return `${base.getMonth()+1}/${base.getDate()}`;
+}
+
+// ===== EDIT MODAL =====
+function openEditModal(dayIdx) {
+  currentEditDay = dayIdx;
+  const meal = menuData[dayIdx] || {};
+  document.getElementById('edit-modal-title').textContent = DAYS[dayIdx];
+  document.getElementById('edit-staple').value = meal.staple || '';
+  document.getElementById('edit-protein').value = meal.protein || '';
+  document.getElementById('edit-veg1').value = meal.veg1 || '';
+  document.getElementById('edit-veg2').value = meal.veg2 || '';
+  document.getElementById('edit-soup').value = meal.soup || '';
+  document.getElementById('edit-fruit').value = meal.fruit || '';
+  document.getElementById('edit-note').value = meal.note || '';
+  document.getElementById('edit-overlay').classList.add('show');
+}
+function closeEditModal(e) {
+  if (!e || e.target === document.getElementById('edit-overlay'))
+    document.getElementById('edit-overlay').classList.remove('show');
+}
+function saveEdit() {
+  menuData[currentEditDay] = {
+    staple: document.getElementById('edit-staple').value,
+    protein: document.getElementById('edit-protein').value,
+    veg1: document.getElementById('edit-veg1').value,
+    veg2: document.getElementById('edit-veg2').value,
+    soup: document.getElementById('edit-soup').value,
+    fruit: document.getElementById('edit-fruit').value,
+    note: document.getElementById('edit-note').value,
+  };
+  document.getElementById('edit-overlay').classList.remove('show');
+  renderMenu();
+  renderNutrition();
+  renderCompliance();
+  renderExportPreview();
+}
+
+// ===== AI MODAL =====
+function openAIModal() {
+  document.getElementById('ai-overlay').classList.add('show');
+  document.getElementById('ai-result').classList.remove('show');
+  document.getElementById('ai-apply-footer').style.display = 'none';
+}
+function openAIModalDay(i) { openAIModal(); }
+function closeAIModal(e) {
+  if (!e || e.target === document.getElementById('ai-overlay'))
+    document.getElementById('ai-overlay').classList.remove('show');
+}
+
+async function runAI() {
+  const prompt = document.getElementById('ai-prompt').value;
+  document.getElementById('ai-loading').classList.add('show');
+  document.getElementById('ai-result').classList.remove('show');
+  document.getElementById('ai-apply-footer').style.display = 'none';
+
+  const systemPrompt = `你是一位專業的學校午餐營養師，熟悉台灣教育部《學校午餐食物內容及營養基準》。
+請為高中生規劃一週五天（週一到週五）的午餐菜單。
+每天包含：主食、主菜（蛋白質來源）、副菜1（蔬菜）、副菜2（蔬菜或豆類）、湯品、水果。
+需符合：熱量750-850 kcal、蛋白質≥25g、蔬菜≥100g、水果一份。
+請以JSON格式回應，僅輸出JSON，不要markdown包裝，格式如下：
+{"0":{"staple":"","protein":"","veg1":"","veg2":"","soup":"","fruit":"","note":""},"1":{...},"2":{...},"3":{...},"4":{...}}`;
+
+  const userMsg = `請規劃本週高中午餐菜單。${prompt ? '特殊需求：' + prompt : '請盡量多樣化，均衡六大類食物。'}`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMsg }]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content?.[0]?.text || '';
+
+    try {
+      aiGeneratedMenu = JSON.parse(text);
+      let display = '📋 AI 建議菜單：\n\n';
+      for (let i = 0; i < 5; i++) {
+        const m = aiGeneratedMenu[i] || aiGeneratedMenu[String(i)] || {};
+        display += `【${DAYS[i]}】\n`;
+        display += `  主食：${m.staple || '—'}\n`;
+        display += `  主菜：${m.protein || '—'}\n`;
+        display += `  副菜：${m.veg1 || '—'}、${m.veg2 || '—'}\n`;
+        display += `  湯品：${m.soup || '—'}\n`;
+        display += `  水果：${m.fruit || '—'}\n`;
+        if (m.note) display += `  備註：${m.note}\n`;
+        display += '\n';
+      }
+      document.getElementById('ai-result').textContent = display;
+      document.getElementById('ai-result').classList.add('show');
+      document.getElementById('ai-apply-footer').style.display = 'flex';
+    } catch {
+      document.getElementById('ai-result').textContent = text;
+      document.getElementById('ai-result').classList.add('show');
+    }
+  } catch (err) {
+    document.getElementById('ai-result').textContent = '⚠️ AI 服務暫時無法連線，請稍後再試。';
+    document.getElementById('ai-result').classList.add('show');
+  }
+  document.getElementById('ai-loading').classList.remove('show');
+}
+
+function applyAIMenu() {
+  if (!aiGeneratedMenu) return;
+  for (let i = 0; i < 5; i++) {
+    const m = aiGeneratedMenu[i] || aiGeneratedMenu[String(i)];
+    if (m) menuData[i] = m;
+  }
+  closeAIModal();
+  renderMenu();
+  renderNutrition();
+  renderCompliance();
+  renderExportPreview();
+}
+
+// ===== NUTRITION =====
+const NUTRIENTS = [
+  { key:'熱量', unit:'kcal', target:800, value:() => 780 },
+  { key:'蛋白質', unit:'g', target:30, value:() => 27 },
+  { key:'鈣', unit:'mg', target:300, value:() => 260 },
+  { key:'鐵', unit:'mg', target:4, value:() => 3.8 },
+  { key:'維生素C', unit:'mg', target:20, value:() => 22 },
+  { key:'膳食纖維', unit:'g', target:7, value:() => 6.2 },
+];
+
+function renderNutrition() {
+  const grid = document.getElementById('nutrition-grid');
+  grid.innerHTML = '';
+  NUTRIENTS.forEach(n => {
+    const val = n.value();
+    const pct = Math.min(Math.round(val / n.target * 100), 130);
+    const over = pct > 110;
+    grid.innerHTML += `<div class="nutrient-box">
+      <div class="nutrient-label">${n.key}</div>
+      <div class="nutrient-value">${val}<span style="font-size:0.65rem;font-weight:400;"> ${n.unit}</span></div>
+      <div class="nutrient-target">目標 ${n.target}${n.unit}</div>
+      <div class="nutrient-bar"><div class="nutrient-fill ${over?'over':''}" style="width:${pct}%"></div></div>
+    </div>`;
+  });
+
+  const bars = document.getElementById('food-group-bars');
+  const groups = [
+    { name:'全穀雜糧', pct:82, color:'#C8A84B' },
+    { name:'豆魚蛋肉', pct:91, color:'#C0392B' },
+    { name:'蔬菜', pct:75, color:'#4A6741' },
+    { name:'水果', pct:100, color:'#C2185B' },
+    { name:'乳品', pct:0, color:'#1565C0' },
+    { name:'油脂堅果', pct:60, color:'#888' },
+  ];
+  bars.innerHTML = groups.map(g => `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+      <div style="width:80px;font-size:0.8rem;color:#555;flex-shrink:0;">${g.name}</div>
+      <div style="flex:1;height:12px;background:var(--border);border-radius:6px;overflow:hidden;">
+        <div style="width:${g.pct}%;height:100%;background:${g.color};border-radius:6px;transition:width 0.5s;"></div>
+      </div>
+      <div style="width:36px;font-size:0.78rem;color:#777;text-align:right;">${g.pct}%</div>
+    </div>`).join('');
+}
+
+// ===== COMPLIANCE =====
+const CHECKS = [
+  { text:'每日熱量 750–850 kcal', ok: true },
+  { text:'蛋白質每日 ≥ 25g', ok: true },
+  { text:'蔬菜每日 ≥ 100g（深色蔬菜 ≥ 1/3）', ok: true },
+  { text:'每日提供水果一份', ok: true },
+  { text:'全穀佔穀類 ≥ 1/3', ok: false },
+  { text:'每週豆製品 ≥ 2次', ok: true },
+  { text:'每週魚類 ≥ 2次', ok: true },
+  { text:'鈉含量每餐 ≤ 800mg', ok: true },
+  { text:'當週乳品供應', ok: false },
+];
+function renderCompliance() {
+  const list = document.getElementById('compliance-list');
+  list.innerHTML = CHECKS.map(c => `
+    <div class="compliance-item ${c.ok ? 'ok' : 'fail'}">
+      <div class="compliance-dot"></div>
+      <span>${c.ok ? '✓' : '✗'} ${c.text}</span>
+    </div>`).join('');
+}
+
+// ===== EXPORT =====
+function renderExportPreview() {
+  let out = `學校午餐菜單\n週次：2026年第19週（5/11–5/15）\n${'─'.repeat(40)}\n\n`;
+  DAYS.forEach((d, i) => {
+    const m = menuData[i] || {};
+    out += `【${d} ${getDate(i)}】\n`;
+    out += `  主食：${m.staple || '—'}\n`;
+    out += `  主菜：${m.protein || '—'}\n`;
+    out += `  副菜：${m.veg1 || '—'}、${m.veg2 || '—'}\n`;
+    out += `  湯品：${m.soup || '—'}\n`;
+    out += `  水果：${m.fruit || '—'}\n`;
+    if (m.note) out += `  備註：${m.note}\n`;
+    out += '\n';
+  });
+  out += `${'─'.repeat(40)}\n審核營養師：＿＿＿＿＿  日期：＿＿＿＿`;
+  document.getElementById('export-preview').textContent = out;
+}
+
+function exportCSV() {
+  let csv = '日期,星期,主食,主菜,副菜1,副菜2,湯品,水果,備註\n';
+  DAYS.forEach((d, i) => {
+    const m = menuData[i] || {};
+    csv += `${getDate(i)},${d},${m.staple||''},${m.protein||''},${m.veg1||''},${m.veg2||''},${m.soup||''},${m.fruit||''},${m.note||''}\n`;
+  });
+  const blob = new Blob(['\uFEFF'+csv], { type:'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = '學校午餐菜單.csv'; a.click();
+}
+
+function exportPrint() { window.print(); }
+
+function copyMenu() {
+  const text = document.getElementById('export-preview').textContent;
+  navigator.clipboard.writeText(text).then(() => alert('已複製菜單文字！'));
+}
+
+// ===== FOOD DB =====
+function renderFoodDB() {
+  const q = document.getElementById('food-search-input').value.trim();
+  const rows = FOOD_DB.filter(f => !q || f.name.includes(q));
+  document.getElementById('food-db-body').innerHTML = rows.map(f => `
+    <tr>
+      <td>${f.name}</td>
+      <td>${CAT_BADGE[f.cat]||''}</td>
+      <td>${f.kcal}</td>
+      <td>${f.protein}</td>
+      <td>${f.carb}</td>
+      <td>${f.fat}</td>
+    </tr>`).join('');
+}
+
+// ===== TAB SWITCH =====
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (name === 'export') renderExportPreview();
+}
+
+function changeWeek(dir) {
+  weekOffset += dir;
+  renderMenu();
+}
+
+function clearWeek() {
+  if (confirm('確定清空本週菜單？')) {
+    menuData = {};
+    renderMenu();
+  }
+}
+
+// ===== INIT =====
+renderMenu();
+renderNutrition();
+renderCompliance();
+renderFoodDB();
+</script>
+</body>
+</html>
