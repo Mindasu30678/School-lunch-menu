@@ -20,13 +20,16 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Setup Gradle
+      - name: Setup Gradle 8.0
         uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.0'
+
+      - name: Create local.properties
+        run: echo "sdk.dir=$ANDROID_SDK_ROOT" > android-camera/local.properties
 
       - name: Build debug APK
         working-directory: android-camera
-        env:
-          ANDROID_HOME: ${{ env.ANDROID_SDK_ROOT }}
         run: gradle assembleDebug --no-daemon
 
       - name: Upload APK
