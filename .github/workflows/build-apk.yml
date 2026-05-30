@@ -18,27 +18,27 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Show Android SDK info
+      - name: Debug SDK environment
         run: |
-          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
           echo "ANDROID_HOME=$ANDROID_HOME"
-          ls ${ANDROID_SDK_ROOT:-$ANDROID_HOME}/platforms/ 2>/dev/null | head -10
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          ls $ANDROID_HOME/platforms/ 2>&1 || echo "no platforms"
+          ls $ANDROID_HOME/build-tools/ 2>&1 || echo "no build-tools"
 
       - name: Create local.properties
-        run: |
-          SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
-          echo "sdk.dir=$SDK" > android-camera/local.properties
-          cat android-camera/local.properties
+        run: echo "sdk.dir=$ANDROID_HOME" > android-camera/local.properties
 
       - name: Download Gradle 8.0
         run: |
           wget -q https://services.gradle.org/distributions/gradle-8.0-bin.zip -O /tmp/gradle.zip
           unzip -q /tmp/gradle.zip -d /opt/
-          echo "/opt/gradle-8.0/bin" >> $GITHUB_PATH
+          /opt/gradle-8.0/bin/gradle --version
 
       - name: Build debug APK
         working-directory: android-camera
-        run: gradle assembleDebug --no-daemon --stacktrace
+        run: |
+          /opt/gradle-8.0/bin/gradle assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/build.log
+          exit ${PIPESTATUS[0]}
 
       - name: Upload APK
         if: success()
@@ -48,10 +48,10 @@ jobs:
           path: android-camera/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
 
-      - name: Upload build reports on failure
+      - name: Upload build log on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: build-reports
-          path: android-camera/app/build/reports/
+          name: build-log
+          path: /tmp/build.log
           retention-days: 7
