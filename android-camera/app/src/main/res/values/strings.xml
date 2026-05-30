@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">靜音相機</string>
+    <string name="settings">設定</string>
+    <string name="background_active">背景作業中</string>
+    <string name="stop">停止</string>
+    <string name="shortcut_label">背景作業</string>
+    <string name="shortcut_short_label">背景</string>
+
+    <!-- Settings -->
+    <string name="shortcut_mode">快捷鍵模式</string>
+    <string name="mode_video">背景錄影</string>
+    <string name="mode_burst">連續拍照</string>
+    <string name="burst_interval">拍照間隔（秒）</string>
+    <string name="video_quality">錄影畫質</string>
+    <string name="photo_quality">拍照畫質</string>
+    <string name="background_lens">背景作業鏡頭</string>
+    <string name="lens_back">後鏡頭</string>
+    <string name="lens_front">前鏡頭</string>
+    <string name="save_path">儲存位置</string>
+    <string name="quality_sd">SD（480p）</string>
+    <string name="quality_hd">HD（720p）</string>
+    <string name="quality_fhd">FHD（1080p）</string>
+    <string name="quality_uhd">UHD（4K）</string>
+    <string name="quality_low">低</string>
+    <string name="quality_medium">中</string>
+    <string name="quality_high">高</string>
+    <string name="channel_name">背景作業</string>
+    <string name="permission_required">需要相機與麥克風權限，請至設定中開啟</string>
+    <string name="go_to_settings">前往設定</string>
+    <string name="cancel">取消</string>
+</resources>

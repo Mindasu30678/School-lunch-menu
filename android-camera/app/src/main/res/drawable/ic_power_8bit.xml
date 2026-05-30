@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 8-bit pixel-style green power button -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="16"
+    android:viewportHeight="16">
+
+    <!-- pixel grid: each rect = 1 pixel unit -->
+    <!-- outer ring top arc -->
+    <path android:fillColor="#00FF66"
+        android:pathData="M6,1 h4 v1 h1 v1 h1 v1 h1 v1 h-1 v-1 h-1 v-1 h-4 v1 h-1 v1 h-1 v1 h-1 v-1 h1 v-1 h1 z" />
+    <!-- right side -->
+    <path android:fillColor="#00FF66"
+        android:pathData="M13,5 h1 v1 h1 v4 h-1 v1 h-1 v1 h-1 v1 h-1 v-1 h1 v-1 h1 v-1 h1 v-4 h-1 z" />
+    <!-- left side -->
+    <path android:fillColor="#00FF66"
+        android:pathData="M2,5 h1 v-1 h1 v1 h-1 v1 h-1 v4 h1 v1 h1 v1 h1 v1 h-1 v-1 h-1 v-1 h-1 v-1 h-1 v-4 h1 z" />
+    <!-- bottom -->
+    <path android:fillColor="#00FF66"
+        android:pathData="M4,13 h1 v1 h1 v1 h4 v-1 h1 v-1 h1 v-1 h-1 v1 h-1 v1 h-4 v-1 h-1 v-1 h-1 z" />
+    <!-- center vertical bar -->
+    <path android:fillColor="#00FF66"
+        android:pathData="M7,0 h2 v7 h-2 z" />
+    <!-- inner gap (dark, to show ring shape) -->
+    <path android:fillColor="#001A0D"
+        android:pathData="M5,5 h1 v-1 h4 v1 h1 v1 h1 v4 h-1 v1 h-1 v1 h-4 v-1 h-1 v-1 h-1 v-4 h1 z" />
+
+</vector>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="快捷鍵設定">
+
+        <ListPreference
+            android:key="shortcut_mode"
+            android:title="@string/shortcut_mode"
+            android:entries="@array/shortcut_mode_entries"
+            android:entryValues="@array/shortcut_mode_values"
+            android:defaultValue="video"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            android:key="burst_interval"
+            android:title="@string/burst_interval"
+            android:defaultValue="5"
+            android:inputType="number"
+            android:dependency="shortcut_mode"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:key="background_lens"
+            android:title="@string/background_lens"
+            android:entries="@array/lens_entries"
+            android:entryValues="@array/lens_values"
+            android:defaultValue="back"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="畫質設定">
+
+        <ListPreference
+            android:key="video_quality"
+            android:title="@string/video_quality"
+            android:entries="@array/video_quality_entries"
+            android:entryValues="@array/video_quality_values"
+            android:defaultValue="fhd"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:key="photo_quality"
+            android:title="@string/photo_quality"
+            android:entries="@array/photo_quality_entries"
+            android:entryValues="@array/photo_quality_values"
+            android:defaultValue="high"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="儲存">
+
+        <Preference
+            android:key="save_path"
+            android:title="@string/save_path"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -1,0 +1,43 @@
+<resources>
+    <string-array name="shortcut_mode_entries">
+        <item>背景錄影</item>
+        <item>連續拍照</item>
+    </string-array>
+    <string-array name="shortcut_mode_values">
+        <item>video</item>
+        <item>burst</item>
+    </string-array>
+
+    <string-array name="lens_entries">
+        <item>後鏡頭</item>
+        <item>前鏡頭</item>
+    </string-array>
+    <string-array name="lens_values">
+        <item>back</item>
+        <item>front</item>
+    </string-array>
+
+    <string-array name="video_quality_entries">
+        <item>SD（480p）</item>
+        <item>HD（720p）</item>
+        <item>FHD（1080p）</item>
+        <item>UHD（4K）</item>
+    </string-array>
+    <string-array name="video_quality_values">
+        <item>sd</item>
+        <item>hd</item>
+        <item>fhd</item>
+        <item>uhd</item>
+    </string-array>
+
+    <string-array name="photo_quality_entries">
+        <item>低</item>
+        <item>中</item>
+        <item>高</item>
+    </string-array>
+    <string-array name="photo_quality_values">
+        <item>low</item>
+        <item>medium</item>
+        <item>high</item>
+    </string-array>
+</resources>
