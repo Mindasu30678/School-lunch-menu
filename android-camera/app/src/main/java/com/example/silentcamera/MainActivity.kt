@@ -175,7 +175,7 @@ class MainActivity : AppCompatActivity() {
 
         provider.unbindAll()
         try {
-            camera = provider.bindToLifecycle(this, selector, preview, imageCapture, videoCapture)
+            camera = provider.bindToLifecycle(this, selector, preview, imageCapture!!, videoCapture!!)
         } catch (e: Exception) {
             Toast.makeText(this, "相機啟動失敗", Toast.LENGTH_SHORT).show()
         }
