@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 8-bit green square dot for notification -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="8"
+    android:viewportHeight="8">
+    <path android:fillColor="#00FF66"
+        android:pathData="M2,1 h4 v1 h1 v4 h-1 v1 h-4 v-1 h-1 v-4 h1 z" />
+</vector>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Background -->
+    <path
+        android:fillColor="#0D0D0D"
+        android:pathData="M0,0 H108 V108 H0 Z" />
+
+    <!-- 8-bit power button ring top arc -->
+    <path
+        android:fillColor="#00FF66"
+        android:pathData="M47,12 h14 v7 h7 v7 h7 v7 h7 v7 h-7 v-7 h-7 v-7 h-14 v7 h-7 v7 h-7 v7 h-7 v-7 h7 v-7 h7 z" />
+
+    <!-- Right side -->
+    <path
+        android:fillColor="#00FF66"
+        android:pathData="M89,40 h7 v7 h7 v28 h-7 v7 h-7 v7 h-7 v7 h-7 v-7 h7 v-7 h7 v-7 h7 v-28 h-7 z" />
+
+    <!-- Left side -->
+    <path
+        android:fillColor="#00FF66"
+        android:pathData="M12,40 h7 v-7 h7 v7 h-7 v7 h-7 v28 h7 v7 h7 v7 h7 v7 h-7 v-7 h-7 v-7 h-7 v-7 h-7 v-28 h7 z" />
+
+    <!-- Bottom -->
+    <path
+        android:fillColor="#00FF66"
+        android:pathData="M26,89 h7 v7 h7 v7 h28 v-7 h7 v-7 h7 v-7 h-7 v7 h-7 v7 h-28 v-7 h-7 v-7 h-7 z" />
+
+    <!-- Center vertical bar -->
+    <path
+        android:fillColor="#00FF66"
+        android:pathData="M47,5 h14 v47 h-14 z" />
+
+    <!-- Inner dark gap -->
+    <path
+        android:fillColor="#0D0D0D"
+        android:pathData="M33,40 h7 v-7 h28 v7 h7 v7 h7 v28 h-7 v7 h-7 v7 h-28 v-7 h-7 v-7 h-7 v-28 h7 z" />
+
+</vector>

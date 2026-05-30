@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="background_task"
+        android:enabled="true"
+        android:icon="@drawable/ic_power_8bit"
+        android:shortcutShortLabel="@string/shortcut_short_label"
+        android:shortcutLongLabel="@string/shortcut_label">
+        <intent
+            android:action="com.example.silentcamera.TOGGLE_BACKGROUND"
+            android:targetPackage="com.example.silentcamera"
+            android:targetClass="com.example.silentcamera.ShortcutReceiver" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+</shortcuts>
